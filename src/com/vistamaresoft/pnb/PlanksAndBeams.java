@@ -21,7 +21,6 @@ import net.risingworld.api.Plugin;
 import net.risingworld.api.events.EventMethod;
 import net.risingworld.api.events.Listener;
 import net.risingworld.api.events.player.PlayerCommandEvent;
-import net.risingworld.api.events.player.gui.PlayerGuiElementClickEvent;
 import net.risingworld.api.objects.Inventory;
 import net.risingworld.api.objects.Item;
 import net.risingworld.api.objects.Player;
@@ -34,9 +33,6 @@ public class PlanksAndBeams extends Plugin implements Listener
 	public static		String	commandPrefix		= "/pnb";
 	public static		int		costPerItem			= 1;
 	public static		Locale	locale;
-
-	// attribute keys
-	public static final String	key_gui				= "com.vms.pnbGUI";
 
 	// CONSTANTS
 	public static final String	VERSION				= "0.2.0";
@@ -105,9 +101,9 @@ public class PlanksAndBeams extends Plugin implements Listener
 	protected static	PlanksAndBeams		plugin;
 	protected static	String				pluginPath;
 
-	//------------------
-	// EVENTS
-	//------------------
+	//****************************
+	//	EVENTS
+	//*****************************
 
 	@Override
 	public void onEnable()
@@ -140,22 +136,9 @@ public class PlanksAndBeams extends Plugin implements Listener
 			mainGui(event.getPlayer());
 	}
 
-	/**	Called when the player clicks on the GUI
-
-		@param	event	the click event
-	*/
-	@EventMethod
-	public void onPlayerClick(PlayerGuiElementClickEvent event)
-	{
-		Player	player	= event.getPlayer();
-		Gui		gui		= (Gui)player.getAttribute(key_gui);
-		if (gui != null)
-			gui.click(event.getGuiElement(), player);
-	}
-
-	//------------------
-	// PUBLIC METHODS
-	//------------------
+	//****************************
+	//	PUBLIC Plug-in Central METHODS
+	//*****************************
 
 	public String getPublicName()
 	{
@@ -169,23 +152,28 @@ public class PlanksAndBeams extends Plugin implements Listener
 	*/
 	public void mainGui(Player player)
 	{
-		Gui		gui;
-		if (!player.hasAttribute(key_gui))
-			gui	= createGui(player);
-		else
-			gui	= (Gui)player.getAttribute(key_gui);
+//		Gui		gui;
+//		if (!player.hasAttribute(key_gui))
+//			gui	= createGui(player);
+//		else
+//			gui	= (Gui)player.getAttribute(key_gui);
+		Gui	gui		= new Gui(player);
 		if (gui != null)
 			gui.show(player);
 	}
+
+	//****************************
+	//	PUBLIC METHODS
+	//*****************************
 
 	/**
 		Gives the player the required items in exchange for resources.
 		Checks the player has enough resources in the inventory.
 
 		@param	player		the target player
-		@param	type		the type of the items (PLANK_ID or BEAM_ID)
-		@param	variation	the item variation (texture: 121 - 212)
-		@param	quantity	the quantity of the items
+		@param	type		the type of the items (PLANK_ID, BEAM_ID or PLANKTRI_ID)
+		@param	variation	the item variation (texture: 21 - 212)
+		@param	quantity	the quantity of the items	(1 - 64)
 		@return	one of the ERR_ return values
 	*/
 	public int buy(Player player, int type, int variation, int quantity)
@@ -218,17 +206,11 @@ public class PlanksAndBeams extends Plugin implements Listener
 		}
 		// does the player have enough resources to pay for the items?
 		if (resources < cost)
-		{
-			player.sendTextMessage(Msgs.msg[Msgs.txt_no_resources]);
 			return ERR_NO_RESOURCES;
-		}
 		// give the items to the player
 		item	= inv.insertNewItem((short)type, variation, quantity);
 		if (item == null)
-		{
-			player.sendTextMessage(Msgs.msg[Msgs.txt_newitem_failed]);
 			return ERR_GENERIC;
-		}
 		// scan the collected slots to withdraw the corresponding number of resources
 		int	size;
 		for (Integer i : sourceSlots)
@@ -248,27 +230,12 @@ public class PlanksAndBeams extends Plugin implements Listener
 			if (cost <= 0)				// when all resources are payed, stop
 				break;
 		}
-		player.sendTextMessage(String.format(Msgs.msg[Msgs.txt_items_added], quantity,
-				type == PLANK_ID ? Msgs.msg[Msgs.gui_typePlank] : Msgs.msg[Msgs.gui_typeBeam],
-				variation));
 		return ERR_SUCCESS;
 	}
 
-	//------------------
-	// STATIC METHODS EXTERNALLY ACCESSIBLE
-	//------------------
-
-	//------------------
-	// UTILITY PRIVATE METHODS
-	//------------------
-
-	private Gui createGui(Player player)
-	{
-		// the GPS GUI panel
-		Gui	gui		= new Gui(player);
-		player.setAttribute(key_gui, gui);
-		return gui;
-	}
+	//****************************
+	//	PRIVATE HELPER METHODS
+	//*****************************
 
 	/**
 		Initialises settings from settings file.

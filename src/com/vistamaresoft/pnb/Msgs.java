@@ -20,24 +20,24 @@ import java.util.Properties;
 public class Msgs
 {
 	// TEXT IDENTIFIERS
-	public static final int	err_invalidCmd		= 0;
-	public static final	int	gui_title			= 1;
-	public static final	int	gui_texture			= 2;
-	public static final	int	gui_type			= 3;
-	public static final	int	gui_typePlank		= 4;
-	public static final	int	gui_typeBeam		= 5;
-	public static final	int	gui_typePlank3		= 6;
-	public static final	int	gui_quantity		= 7;
-	public static final	int	gui_buy				= 8;
-	public static final int	gui_resourcesFmt	= 9;
-	public static final int	gui_stoneName		= 10;
-	public static final int	gui_sandstoneName	= 11;
-	public static final int	gui_dirtName		= 12;
-	public static final int	gui_lumberName		= 13;
-	public static final int	gui_copperName		= 14;
-	public static final int	gui_ironName		= 15;
+	public static final	int	gui_title			= 0;
+	public static final	int	gui_texture			= 1;
+	public static final	int	gui_type			= 2;
+	public static final	int	gui_typePlank		= 3;
+	public static final	int	gui_typeBeam		= 4;
+	public static final	int	gui_typePlank3		= 5;
+	public static final	int	gui_quantity		= 6;
+	public static final int	gui_resources		= 7;
+	public static final int	gui_resourcesFmt	= 8;
+	public static final	int	gui_buy				= 9;
+//	public static final int	gui_stoneName		= 10;
+//	public static final int	gui_sandstoneName	= 11;
+//	public static final int	gui_dirtName		= 12;
+//	public static final int	gui_lumberName		= 13;
+//	public static final int	gui_copperName		= 14;
+//	public static final int	gui_ironName		= 15;
 	public static final int		firstResName		= 10;
-	public static final int		lastResName			= 15;
+//	public static final int		lastResName			= 15;
 	// Messages
 	public static final int	txt_no_resources	= 16;
 	public static final int	txt_newitem_failed	= 17;
@@ -47,7 +47,6 @@ public class Msgs
 
 	public static		String[]	msg		=
 	{
-		"Invalid P'nB command: '",
 		"Planks 'n Beams",
 		"Texture:",
 		"Type:",
@@ -55,17 +54,18 @@ public class Msgs
 		"Beam",
 		"Triangle",
 		"Quantity:",
+		"Required:",
+		"%1$s x %2$d",
 		"\n BUY! \n ",
-		"Required: %1$s x %2$d",
 		"stone",
 		"sandstone",
 		"dirt",
 		"lumber",
 		"copper ingot",
 		"iron ingot",
-		"PnB: [#FF0000]You do not have enough resources to buy those items!",
-		"Pnb: [#FF0000]Could not add the required items! Inventory full?",
-		"Pnb: [#FFFF00]%1$d x %2$s (var. %3$d) added to inventory",
+		"You do not have enough resources to buy those items!",
+		"Could not add the required items! Inventory full?",
+		"%1$d x %2$s (var. %3$d) added to inventory",
 	};
 
 	private static final	String		BUNDLE_NAME	= "/locale/messages";
