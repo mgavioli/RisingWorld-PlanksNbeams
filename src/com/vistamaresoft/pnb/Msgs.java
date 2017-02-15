@@ -27,21 +27,25 @@ public class Msgs
 	public static final	int	gui_typeBeam		= 4;
 	public static final	int	gui_typePlank3		= 5;
 	public static final	int	gui_quantity		= 6;
-	public static final int	gui_resources		= 7;
-	public static final int	gui_resourcesFmt	= 8;
-	public static final	int	gui_buy				= 9;
-//	public static final int	gui_stoneName		= 10;
-//	public static final int	gui_sandstoneName	= 11;
-//	public static final int	gui_dirtName		= 12;
-//	public static final int	gui_lumberName		= 13;
-//	public static final int	gui_copperName		= 14;
-//	public static final int	gui_ironName		= 15;
-	public static final int		firstResName		= 10;
-//	public static final int		lastResName			= 15;
+	public static final	int	gui_minButt			= 7;
+	public static final	int	gui_maxButt			= 8;
+	public static final int	gui_resources		= 9;
+	public static final int	gui_resourcesFmt	= 10;
+	public static final	int	gui_buy				= 11;
+//	public static final int	gui_stoneName		= 12;
+//	public static final int	gui_sandstoneName	= 13;
+//	public static final int	gui_dirtName		= 14;
+//	public static final int	gui_lumberName		= 15;
+//	public static final int	gui_copperName		= 16;
+//	public static final int	gui_ironName		= 17;
+//	public static final int	gui_gravelName		= 18;
+//	public static final int	gui_sandName		= 19;
+	public static final int		firstResName		= 12;
+//	public static final int		lastResName			= 19;
 	// Messages
-	public static final int	txt_no_resources	= 16;
-	public static final int	txt_newitem_failed	= 17;
-	public static final int	txt_items_added		= 18;
+	public static final int	txt_no_resources	= 20;
+	public static final int	txt_newitem_failed	= 21;
+	public static final int	txt_items_added		= 22;
 	
 	private static final int	LAST_TEXT	= txt_items_added;
 
@@ -54,6 +58,8 @@ public class Msgs
 		"Beam",
 		"Triangle",
 		"Quantity:",
+		"Min",
+		"Max",
 		"Required:",
 		"%1$s x %2$d",
 		"\n BUY! \n ",
@@ -63,6 +69,8 @@ public class Msgs
 		"lumber",
 		"copper ingot",
 		"iron ingot",
+		"gravel",
+		"sand",
 		"You do not have enough resources to buy those items!",
 		"Could not add the required items! Inventory full?",
 		"%1$d x %2$s (var. %3$d) added to inventory",

@@ -32,10 +32,12 @@ public class PlanksAndBeams extends Plugin implements Listener
 
 	public static		String	commandPrefix		= "/pnb";
 	public static		int		costPerItem			= 1;
+	public static		boolean	freeForAdmin		= false;
+	public static		boolean	freeForCreative		= false;
 	public static		Locale	locale;
 
 	// CONSTANTS
-	public static final String	VERSION				= "0.2.0";
+	public static final String	VERSION				= "0.3.0";
 	public static final	String	publicName			= "Planks 'n Beams";
 	public static final int		NUM_OF_QUICKSLOTS	= 5;
 	public static final int		NUM_OF_INVSLOTS		= 32;
@@ -48,6 +50,8 @@ public class PlanksAndBeams extends Plugin implements Listener
 	public static final short	COPPERINGOT_ID		= 172;
 	public static final short	DIRT_VAR			= 1;
 	public static final short	STONE_VAR			= 3;
+	public static final short	GRAVEL_VAR			= 4;
+	public static final short	SAND_VAR			= 9;
 	public static final short	SANDSTONE_VAR		= 11;
 
 	// not a real constant, cached for performance, as it is going to be used a lot!
@@ -55,14 +59,19 @@ public class PlanksAndBeams extends Plugin implements Listener
 
 	// MATERIAL & RESOURCES
 	public static final	short[]	resourceId			=		// the type ID of each used resource
-		{ORE_ID,   ORE_ID,       ORE_ID,  LUMBER_ID,COPPERINGOT_ID,IRONINGOT_ID};
+		{ORE_ID,   ORE_ID,       ORE_ID,  LUMBER_ID,COPPERINGOT_ID,IRONINGOT_ID,ORE_ID,		ORE_ID};
 	public static final	short[]	resourceVar			=		// the type variation of each used resource
-		{STONE_VAR,SANDSTONE_VAR,DIRT_VAR,0,        0,             0};
+		{STONE_VAR,SANDSTONE_VAR,DIRT_VAR,0,        0,             0,			GRAVEL_VAR, SAND_VAR};
 	// the range of known textures
 	public static final	short	firstVariation		= 21;
-	public static final	short	lastVariation		= 212;
+	public static final	short	lastVariation		= 218;
 	// the index (into resourceId and resourceVar) of the needed resource for each texture
 	public static final short[]	resourcePerVariation	=
+	// 0: stone			5: iron ingot
+	// 1: sandstone		6: gravel
+	// 2: dirt			7: sand
+	// 3: lumber
+	// 4: copper ingot
 		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,	// 21-32   stone - stone bricks: stone
 		  1, 1, 1, 1,							// 33-36   sandstone: sandstone
 		  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,	// 37-48   cobblestone: stone
@@ -88,6 +97,7 @@ public class PlanksAndBeams extends Plugin implements Listener
 		  5, 5, 5, 5, 5,						// 194-198 recycled metal: iron ingot
 		  0, 0, 0, 0, 0, 0,						// 199-204 addit. plaster: stone
 		  0, 0, 0, 0, 0, 0, 0, 0,				// 205-212 ornamental: stone
+		  2, 2, 0, 6, 2, 7						// 213-218 natural: various
 		};
 
 	// RETURN CODES
@@ -152,11 +162,6 @@ public class PlanksAndBeams extends Plugin implements Listener
 	*/
 	public void mainGui(Player player)
 	{
-//		Gui		gui;
-//		if (!player.hasAttribute(key_gui))
-//			gui	= createGui(player);
-//		else
-//			gui	= (Gui)player.getAttribute(key_gui);
 		Gui	gui		= new Gui(player);
 		if (gui != null)
 			gui.show(player);
@@ -184,26 +189,29 @@ public class PlanksAndBeams extends Plugin implements Listener
 		// retrieve the needed resource
 		int		itemId		= resourceId[resourcePerVariation[variation-firstVariation]];
 		int		itemVar		= resourceVar[resourcePerVariation[variation-firstVariation]];
+		int		cost		= player.isAdmin() && PlanksAndBeams.freeForAdmin ||
+								player.isCreativeModeEnabled() && PlanksAndBeams.freeForCreative ? 0
+								: quantity * costPerItem;
+		// scan the inventory to collect the total number of resources and the slots where they are
 		Item	item;
 		Inventory	inv	= player.getInventory();
-		int		cost		= quantity * costPerItem;
-		// scan the inventory to collect the total number of resources and the slots where they are
 		int		resources	= 0;					// the number of resources available in the player inventory
 		ArrayList<Integer>	sourceSlots	= new ArrayList<Integer>();
-		for (int invType = 0; invType < slotTypeValues.length; invType++)
-		{
-			Inventory.SlotType	slotType	= slotTypeValues[invType];
-			for (int j = 0; j < inv.getSlotCount(slotType); j++)
+		if (cost > 0)
+			for (int invType = 0; invType < slotTypeValues.length; invType++)
 			{
-				if ( (item	= inv.getItem(j, slotType)) == null)
-					continue;
-				if (item.getTypeID() == itemId && item.getVariation() == itemVar)
+				Inventory.SlotType	slotType	= slotTypeValues[invType];
+				for (int j = 0; j < inv.getSlotCount(slotType); j++)
 				{
-					resources	+= item.getStacksize();
-					sourceSlots.add( (invType << 16) + j);
+					if ( (item	= inv.getItem(j, slotType)) == null)
+						continue;
+					if (item.getTypeID() == itemId && item.getVariation() == itemVar)
+					{
+						resources	+= item.getStacksize();
+						sourceSlots.add( (invType << 16) + j);
+					}
 				}
 			}
-		}
 		// does the player have enough resources to pay for the items?
 		if (resources < cost)
 			return ERR_NO_RESOURCES;
@@ -251,10 +259,10 @@ public class PlanksAndBeams extends Plugin implements Listener
 			settings.load(in);
 			in.close();
 			// fill global values
-			Integer	temp;
 			commandPrefix	= "/" + settings.getProperty("command", commandPrefix);
-			temp			= toInteger(settings.getProperty("costPerItem", Integer.toString(costPerItem)));
-			costPerItem		= temp != null ? temp : costPerItem;
+			costPerItem		= toInteger(settings.getProperty("costPerItem"), costPerItem);
+			freeForAdmin	= (toInteger(settings.getProperty("freeForAdmin"), 0) != 0);
+			freeForCreative	= (toInteger(settings.getProperty("freeForCreative"), 0) != 0);
 			// locale is a bit more complex
 			String		strLocale		= settings.getProperty("locale", localeLanguageDef);
 			String[]	localeParams	= strLocale.split("-");
@@ -279,20 +287,21 @@ public class PlanksAndBeams extends Plugin implements Listener
 	}
 
 	/**
-		Returns txt as an integer number if it can be interpreted as one or 0 if it cannot.
+		Returns txt as an integer number if it can be interpreted as one or defValue if it cannot.
 
- 		@param	txt	the String to interpret as an int
- 		@return	the equivalent int or null if txt cannot represent an integer.
+ 		@param	txt			the String to interpret as an int.
+ 		@param	defValue	the value to return on error.
+ 		@return	the equivalent int or defValue if txt cannot represent an integer.
 	*/
-	static protected Integer toInteger(String txt)
+	static protected int toInteger(String txt, int defValue)
 	{
 		if (txt == null)
-			return null;
+			return defValue;
 		int val;
 		try {
 			val = Integer.decode(txt);
 		} catch (NumberFormatException e) {		// txt cannot be parsed as a number
-			return null;
+			return defValue;
 		}
 		return val;
 	}

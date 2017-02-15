@@ -13,6 +13,7 @@
 package com.vistamaresoft.pnb;
 
 import java.io.IOException;
+import com.vistamaresoft.rwgui.GuiCheckBox;
 import com.vistamaresoft.rwgui.GuiDialogueBox;
 import com.vistamaresoft.rwgui.GuiLayout;
 import com.vistamaresoft.rwgui.GuiMessageBox;
@@ -29,13 +30,13 @@ public class Gui extends GuiDialogueBox
 	// CONSTANTS
 	//
 	private static final	int		NUM_OF_IMG_ROWS	= 6;
-	private static final	int		NUM_OF_IMG_COLS	= 8;
+	private static final	int		NUM_OF_IMG_COLS	= 9;
 	private static final	int		IMAGE_HEIGHT	= 64;
 	private static final	int		IMAGE_WIDTH		= 64;
 	private static final	int		IMAGE_BORDERCOL	= RWGui.ACTIVE_COLOUR;
 	// Constants
 	private static final	int		NUM_OF_IMAGES	= NUM_OF_IMG_ROWS * NUM_OF_IMG_COLS;
-	private static final	int		NUM_OF_TEXTURES	= 192;
+	private static final	int		NUM_OF_TEXTURES	= 198;
 	private static final	int		INTERTYPE_PADDING	= RWGui.DEFAULT_PADDING * 3;
 	private static final	int		INTERQTY_PADDING= RWGui.DEFAULT_PADDING * 3;
 
@@ -44,9 +45,11 @@ public class Gui extends GuiDialogueBox
 	private static final	int		PLANKBUTT_ID	= PGDNBUTT_ID + 1;
 	private static final	int		BEAMBUTT_ID		= PLANKBUTT_ID + 1;
 	private static final	int		PLANK3BUTT_ID	= BEAMBUTT_ID + 1;
-	private static final	int		MINUSBUTT_ID	= PLANK3BUTT_ID + 1;
+	private static final	int		MINBUTT_ID		= PLANK3BUTT_ID + 1;
+	private static final	int		MINUSBUTT_ID	= MINBUTT_ID + 1;
 	private static final	int		PLUSBUTT_ID		= MINUSBUTT_ID + 1;
-	private static final	int		DOBUTT_ID		= PLUSBUTT_ID + 1;
+	private static final	int		MAXBUTT_ID		= PLUSBUTT_ID + 1;
+	private static final	int		DOBUTT_ID		= MAXBUTT_ID + 1;
 
 	// FIELDS
 	//
@@ -54,17 +57,20 @@ public class Gui extends GuiDialogueBox
 	private	int						textureFirstOld;
 	private	int						imageSel;		// the index of the selected image
 	private	int						imageSelOld;
+	private boolean					free;
 	private GuiImage[]				images;			// the texture images
 	private	GuiImage				pgUpButt;
 	private GuiImage				pgDnButt;
 	private	int						type;
-	private	GuiImage				plankCheck;
-	private	GuiImage				beamCheck;
-	private	GuiImage				plank3Check;
+	private	GuiCheckBox				plankCheck;
+	private	GuiCheckBox				beamCheck;
+	private	GuiCheckBox				plank3Check;
 	private int						quant;
+	private GuiLabel				minButt;
 	private GuiImage				minusButt;
 	private GuiLabel				quantText;
 	private GuiImage				plusButt;
+	private GuiLabel				maxButt;
 	private GuiLabel				resourcesText;
 	// to convert an image index into a variation number
 	private short[]					image2variation	=
@@ -87,7 +93,8 @@ public class Gui extends GuiDialogueBox
 		 175,176,177,178,179,180,181,182,183,184,	// metal: iron ingot
 		 185,186,187,188,189,190,191,192,193,		// metal plates: iron ingot
 		 194,195,196,197,198,						// recycled metal: iron ingot
-		 205,206,207,208,209,210,211,212			// ornamental: stone
+		 205,206,207,208,209,210,211,212,			// ornamental: stone
+		 213,214,215,216,217,218					// natural: various
 		};
 	// to convert an image index into a texture name
 	private	short[]					image2texture	=
@@ -110,13 +117,16 @@ public class Gui extends GuiDialogueBox
 		 154,155,156,157,158,159,160,161,162,163,	// metal
 		 164,165,166,167,168,169,170,171,172,		// metal plates
 		 173,174,185,176,177,						// recycled metal
-		 184,185,186,187,188,189,190,192			// ornamental
+		 184,185,186,187,188,189,190,191,			// ornamental
+		 192,193,194,195,196,197					// natural
 		};
 
 	public Gui(Player player)
 	{
 		super(PlanksAndBeams.plugin, Msgs.msg[Msgs.gui_title], RWGui.LAYOUT_VERT, null);
 		setCallback(new DlgHandler());
+		free = player.isAdmin() && PlanksAndBeams.freeForAdmin ||
+				player.isCreativeModeEnabled() && PlanksAndBeams.freeForCreative;
 		// The TEXTURES
 		addChild(new GuiLabel(Msgs.msg[Msgs.gui_texture], 0, 0, false));
 		textureFirst		= 0;
@@ -149,29 +159,21 @@ public class Gui extends GuiDialogueBox
 
 		layout2	= layout.addNewLayoutChild(RWGui.LAYOUT_HORIZ, RWGui.LAYOUT_H_LEFT | RWGui.LAYOUT_V_TOP);
 		layout2.setPadding(INTERTYPE_PADDING);
-		GuiLayout	layout3	= layout2.addNewLayoutChild(RWGui.LAYOUT_HORIZ, RWGui.LAYOUT_H_LEFT | RWGui.LAYOUT_V_MIDDLE);
-		plankCheck	= new GuiImage(0, 0, false, RWGui.BUTTON_SIZE, RWGui.BUTTON_SIZE, false);
-		layout3.addChild(plankCheck, PLANKBUTT_ID);
-		RWGui.setImage(plankCheck, RWGui.ICN_RADIO_CHECK);
-		layout3.addChild(new GuiLabel(Msgs.msg[Msgs.gui_typePlank], 0, 0, false));
-
-		layout3	= layout2.addNewLayoutChild(RWGui.LAYOUT_HORIZ, RWGui.LAYOUT_H_LEFT | RWGui.LAYOUT_V_MIDDLE);
-		beamCheck	= new GuiImage(0, 0, false, RWGui.BUTTON_SIZE, RWGui.BUTTON_SIZE, false);
-		layout3.addChild(beamCheck, BEAMBUTT_ID);
-		RWGui.setImage(beamCheck, RWGui.ICN_RADIO_UNCHECK);
-		layout3.addChild(new GuiLabel(Msgs.msg[Msgs.gui_typeBeam], 0, 0, false));
-
-		layout3	= layout2.addNewLayoutChild(RWGui.LAYOUT_HORIZ, RWGui.LAYOUT_H_LEFT | RWGui.LAYOUT_V_MIDDLE);
-		plank3Check	= new GuiImage(0, 0, false, RWGui.BUTTON_SIZE, RWGui.BUTTON_SIZE, false);
-		layout3.addChild(plank3Check, PLANK3BUTT_ID);
-		RWGui.setImage(plank3Check, RWGui.ICN_RADIO_UNCHECK);
-		layout3.addChild(new GuiLabel(Msgs.msg[Msgs.gui_typePlank3], 0, 0, false));
+		plankCheck	= new GuiCheckBox(Msgs.msg[Msgs.gui_typePlank], GuiCheckBox.CHECKED, true, PLANKBUTT_ID, null);
+		layout2.addChild(plankCheck);
+		beamCheck	= new GuiCheckBox(Msgs.msg[Msgs.gui_typeBeam], GuiCheckBox.UNCHECKED, true, BEAMBUTT_ID, null);
+		layout2.addChild(beamCheck);
+		plank3Check	= new GuiCheckBox(Msgs.msg[Msgs.gui_typePlank3], GuiCheckBox.UNCHECKED, true, PLANK3BUTT_ID, null);
+		layout2.addChild(plank3Check);
 
 		// The QUANTITY
 		quant	= 1;
 		layout.addChild(new GuiLabel(Msgs.msg[Msgs.gui_quantity], 0, 0, false));
 		layout2	= layout.addNewLayoutChild(RWGui.LAYOUT_HORIZ, RWGui.LAYOUT_H_LEFT | RWGui.LAYOUT_V_MIDDLE);
 		layout2.setPadding(INTERQTY_PADDING);
+		minButt		= new GuiLabel(Msgs.msg[Msgs.gui_minButt], 0, 0, false);
+		minButt.setColor(RWGui.ACTIVE_COLOUR);
+		layout2.addChild(minButt, MINBUTT_ID);
 		minusButt	= new GuiImage(0, 0, false, RWGui.BUTTON_SIZE, RWGui.BUTTON_SIZE, false);
 		RWGui.setImage(minusButt, RWGui.ICN_MINUS);
 		layout2.addChild(minusButt, MINUSBUTT_ID);
@@ -180,6 +182,9 @@ public class Gui extends GuiDialogueBox
 		plusButt	= new GuiImage(0, 0, false, RWGui.BUTTON_SIZE, RWGui.BUTTON_SIZE, false);
 		RWGui.setImage(plusButt, RWGui.ICN_PLUS);
 		layout2.addChild(plusButt, PLUSBUTT_ID);
+		maxButt		= new GuiLabel(Msgs.msg[Msgs.gui_maxButt], 0, 0, false);
+		maxButt.setColor(RWGui.ACTIVE_COLOUR);
+		layout2.addChild(maxButt, MAXBUTT_ID);
 
 		// The RESOURCES
 		layout.addChild(new GuiLabel(Msgs.msg[Msgs.gui_resources], 0, 0, false));
@@ -236,44 +241,27 @@ public class Gui extends GuiDialogueBox
 				break;
 			case PLANKBUTT_ID:
 				type	= PlanksAndBeams.PLANK_ID;
-				RWGui.setImage(plankCheck, RWGui.ICN_RADIO_CHECK);
-				RWGui.setImage(beamCheck, RWGui.ICN_RADIO_UNCHECK);
-				RWGui.setImage(plank3Check, RWGui.ICN_RADIO_UNCHECK);
 				break;
 			case BEAMBUTT_ID:
 				type	= PlanksAndBeams.BEAM_ID;
-				RWGui.setImage(plankCheck, RWGui.ICN_RADIO_UNCHECK);
-				RWGui.setImage(beamCheck, RWGui.ICN_RADIO_CHECK);
-				RWGui.setImage(plank3Check, RWGui.ICN_RADIO_UNCHECK);
 				break;
 			case PLANK3BUTT_ID:
 				type	= PlanksAndBeams.PLANKTRI_ID;
-				RWGui.setImage(plankCheck, RWGui.ICN_RADIO_UNCHECK);
-				RWGui.setImage(beamCheck, RWGui.ICN_RADIO_UNCHECK);
-				RWGui.setImage(plank3Check, RWGui.ICN_RADIO_CHECK);
+				break;
+			case MINBUTT_ID:
+				quant = 1;
+				updateResources();
 				break;
 			case MINUSBUTT_ID:
 				quant--;
-				if (quant <= 1)
-				{
-					quant = 1;
-					minusButt.setVisible(false);
-				}
-				if (quant == 63)
-					plusButt.setVisible(true);
-				quantText.setText(Integer.toString(quant));
 				updateResources();
 				break;
 			case PLUSBUTT_ID:
 				quant++;
-				if (quant >= 64)
-				{
-					quant = 64;
-					plusButt.setVisible(false);
-				}
-				if (quant == 2)
-					minusButt.setVisible(true);
-				quantText.setText(Integer.toString(quant));
+				updateResources();
+				break;
+			case MAXBUTT_ID:
+				quant = 64;
 				updateResources();
 				break;
 			case DOBUTT_ID:
@@ -288,15 +276,14 @@ public class Gui extends GuiDialogueBox
 //					player.sendTextMessage(Msgs.msg[Msgs.txt_newitem_failed]);
 //					break;
 				case PlanksAndBeams.ERR_SUCCESS:
-					close(player);
-					free();
 					String[]	texts	= new String[1];
 					texts[0]	= String.format(Msgs.msg[Msgs.txt_items_added], quant,
 							type == PlanksAndBeams.PLANK_ID ? Msgs.msg[Msgs.gui_typePlank] :
-							(type == PlanksAndBeams.PLANK_ID ? Msgs.msg[Msgs.gui_typeBeam] :
+							(type == PlanksAndBeams.BEAM_ID ? Msgs.msg[Msgs.gui_typeBeam] :
 								Msgs.msg[Msgs.gui_typePlank3]),
 							variation);
-					new GuiMessageBox(PlanksAndBeams.plugin, player, Msgs.msg[Msgs.gui_title], texts, 0);
+					push(player, new GuiMessageBox(PlanksAndBeams.plugin, player, Msgs.msg[Msgs.gui_title],
+							texts, 0));
 					break;
 				default:
 					player.sendTextMessage(Msgs.msg[Msgs.txt_newitem_failed]);
@@ -321,8 +308,9 @@ public class Gui extends GuiDialogueBox
 				{
 					for (int j = i; j < NUM_OF_IMAGES; j++)
 					{
-						images[j].setImage(null);
-						images[j].setColor(RWGui.PANEL_COLOUR);
+						images[j].setVisible(false);
+//						images[j].setImage(null);
+//						images[j].setColor(RWGui.PANEL_COLOUR);
 					}
 					break;
 				}
@@ -335,6 +323,7 @@ public class Gui extends GuiDialogueBox
 //					File file	= new File(uri);
 //					ii = new ImageInformation(file);
 					images[i].setImage(ii);
+					images[i].setVisible(true);
 				} catch (IOException /*| URISyntaxException*/ e)
 				{
 					e.printStackTrace();
@@ -355,10 +344,15 @@ public class Gui extends GuiDialogueBox
 
 	private void updateResources()
 	{
+		if (quant < 1)		quant = 1;
+		minusButt.setVisible(quant > 1);
+		if (quant > 64)		quant = 64;
+		plusButt.setVisible(quant < 64);
+		quantText.setText(Integer.toString(quant));
 		int		resIndex	= PlanksAndBeams.resourcePerVariation
 				[image2variation[textureFirst+imageSel]-PlanksAndBeams.firstVariation];
 		String	text		= String.format(Msgs.msg[Msgs.gui_resourcesFmt],
-				Msgs.msg[Msgs.firstResName + resIndex], quant * PlanksAndBeams.costPerItem);
+				Msgs.msg[Msgs.firstResName + resIndex], free ? 0 : quant * PlanksAndBeams.costPerItem);
 		resourcesText.setText(text);
 	}
 
