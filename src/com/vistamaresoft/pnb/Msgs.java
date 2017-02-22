@@ -26,26 +26,31 @@ public class Msgs
 	public static final	int	gui_typePlank		= 3;
 	public static final	int	gui_typeBeam		= 4;
 	public static final	int	gui_typePlank3		= 5;
-	public static final	int	gui_quantity		= 6;
-	public static final	int	gui_minButt			= 7;
-	public static final	int	gui_maxButt			= 8;
-	public static final int	gui_resources		= 9;
-	public static final int	gui_resourcesFmt	= 10;
-	public static final	int	gui_buy				= 11;
-//	public static final int	gui_stoneName		= 12;
-//	public static final int	gui_sandstoneName	= 13;
-//	public static final int	gui_dirtName		= 14;
-//	public static final int	gui_lumberName		= 15;
-//	public static final int	gui_copperName		= 16;
-//	public static final int	gui_ironName		= 17;
-//	public static final int	gui_gravelName		= 18;
-//	public static final int	gui_sandName		= 19;
-	public static final int		firstResName		= 12;
-//	public static final int		lastResName			= 19;
+	public static final	int	gui_typeWindow1		= 6;
+	public static final	int	gui_typeWindow2		= 7;
+	public static final	int	gui_typeWindow3		= 8;
+	public static final	int	gui_typeWindow4		= 9;
+	public static final	int	gui_typeLog			=10;
+	public static final	int	gui_quantity		=11;
+	public static final	int	gui_minButt			=12;
+	public static final	int	gui_maxButt			=13;
+	public static final int	gui_resources		=14;
+	public static final int	gui_resourcesFmt	=15;
+	public static final	int	gui_buy				=16;
+//	public static final int	gui_stoneName		=17;
+//	public static final int	gui_sandstoneName	=18;
+//	public static final int	gui_dirtName		=19;
+//	public static final int	gui_lumberName		=20;
+//	public static final int	gui_copperName		=21;
+//	public static final int	gui_ironName		=22;
+//	public static final int	gui_gravelName		=23;
+//	public static final int	gui_sandName		=24;
+	public static final int		firstResName		=17;
+//	public static final int		lastResName			=24;
 	// Messages
-	public static final int	txt_no_resources	= 20;
-	public static final int	txt_newitem_failed	= 21;
-	public static final int	txt_items_added		= 22;
+	public static final int	txt_no_resources	=25;
+	public static final int	txt_newitem_failed	=26;
+	public static final int	txt_items_added		=27;
 	
 	private static final int	LAST_TEXT	= txt_items_added;
 
@@ -57,6 +62,11 @@ public class Msgs
 		"Plank",
 		"Beam",
 		"Triangle",
+		"Window A",
+		"Window B",
+		"Window C",
+		"Window D",
+		"Log",
 		"Quantity:",
 		"Min",
 		"Max",

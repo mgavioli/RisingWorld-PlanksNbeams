@@ -32,12 +32,13 @@ public class PlanksAndBeams extends Plugin implements Listener
 
 	public static		String	commandPrefix		= "/pnb";
 	public static		int		costPerItem			= 1;
+	public static		int		windowResMult		= 5;
 	public static		boolean	freeForAdmin		= false;
 	public static		boolean	freeForCreative		= false;
 	public static		Locale	locale;
 
 	// CONSTANTS
-	public static final String	VERSION				= "0.3.0";
+	public static final String	VERSION				= "0.4.0";
 	public static final	String	publicName			= "Planks 'n Beams";
 	public static final int		NUM_OF_QUICKSLOTS	= 5;
 	public static final int		NUM_OF_INVSLOTS		= 32;
@@ -45,7 +46,12 @@ public class PlanksAndBeams extends Plugin implements Listener
 	public static final short	LUMBER_ID			= 102;
 	public static final short	PLANK_ID			= 113;
 	public static final short	BEAM_ID				= 114;
+	public static final short	WINDOW1_ID			= 117;	// frame
+	public static final short	WINDOW2_ID			= 118;	// frame + vert.
+	public static final short	WINDOW3_ID			= 119;	// frame + vert. + high bar
+	public static final short	WINDOW4_ID			= 120;	// frame + vert. + middle bar
 	public static final short	PLANKTRI_ID			= 124;
+	public static final short	LOG_ID				= 125;
 	public static final short	IRONINGOT_ID		= 171;
 	public static final short	COPPERINGOT_ID		= 172;
 	public static final short	DIRT_VAR			= 1;
@@ -230,7 +236,7 @@ public class PlanksAndBeams extends Plugin implements Listener
 				inv.removeItem( (i & 0xFFFF), slotTypeValues[(i>>16)]);
 				cost	-= size;
 			}
-			else						// if item fulfils or exceeds the cost, remove only needed stones
+			else						// if item fulfils or exceeds the cost, remove only needed resources
 			{
 				inv.removeItem( (i & 0xFFFF), slotTypeValues[(i>>16)], cost);
 				cost	= 0;

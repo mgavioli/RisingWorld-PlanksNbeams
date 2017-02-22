@@ -12,7 +12,6 @@
 
 package com.vistamaresoft.pnb;
 
-import java.io.IOException;
 import com.vistamaresoft.rwgui.GuiCheckBox;
 import com.vistamaresoft.rwgui.GuiDialogueBox;
 import com.vistamaresoft.rwgui.GuiLayout;
@@ -44,8 +43,13 @@ public class Gui extends GuiDialogueBox
 	private static final	int		PGDNBUTT_ID		= PGUPBUTT_ID + 1;
 	private static final	int		PLANKBUTT_ID	= PGDNBUTT_ID + 1;
 	private static final	int		BEAMBUTT_ID		= PLANKBUTT_ID + 1;
-	private static final	int		PLANK3BUTT_ID	= BEAMBUTT_ID + 1;
-	private static final	int		MINBUTT_ID		= PLANK3BUTT_ID + 1;
+	private static final	int		LOGBUTT_ID		= BEAMBUTT_ID + 1;
+	private static final	int		PLANK3BUTT_ID	= LOGBUTT_ID + 1;
+	private static final	int		WINDOW1BUTT_ID	= PLANK3BUTT_ID + 1;
+	private static final	int		WINDOW2BUTT_ID	= WINDOW1BUTT_ID + 1;
+	private static final	int		WINDOW3BUTT_ID	= WINDOW2BUTT_ID + 1;
+	private static final	int		WINDOW4BUTT_ID	= WINDOW3BUTT_ID + 1;
+	private static final	int		MINBUTT_ID		= WINDOW4BUTT_ID + 1;
 	private static final	int		MINUSBUTT_ID	= MINBUTT_ID + 1;
 	private static final	int		PLUSBUTT_ID		= MINUSBUTT_ID + 1;
 	private static final	int		MAXBUTT_ID		= PLUSBUTT_ID + 1;
@@ -64,7 +68,12 @@ public class Gui extends GuiDialogueBox
 	private	int						type;
 	private	GuiCheckBox				plankCheck;
 	private	GuiCheckBox				beamCheck;
+	private	GuiCheckBox				logCheck;
 	private	GuiCheckBox				plank3Check;
+	private	GuiCheckBox				window1Check;
+	private	GuiCheckBox				window2Check;
+	private	GuiCheckBox				window3Check;
+	private	GuiCheckBox				window4Check;
 	private int						quant;
 	private GuiLabel				minButt;
 	private GuiImage				minusButt;
@@ -151,7 +160,7 @@ public class Gui extends GuiDialogueBox
 		layout2.addChild(pgDnButt, PGDNBUTT_ID);
 
 		// The TABLE of settings
-		layout	= addNewTableLayoutChild(2, 3, 0);
+		layout	= addNewTableLayoutChild(2, 4, 0);
 
 		// The TYPE
 		type		= PlanksAndBeams.PLANK_ID;
@@ -163,8 +172,21 @@ public class Gui extends GuiDialogueBox
 		layout2.addChild(plankCheck);
 		beamCheck	= new GuiCheckBox(Msgs.msg[Msgs.gui_typeBeam], GuiCheckBox.UNCHECKED, true, BEAMBUTT_ID, null);
 		layout2.addChild(beamCheck);
+		logCheck	= new GuiCheckBox(Msgs.msg[Msgs.gui_typeLog], GuiCheckBox.UNCHECKED, true, LOGBUTT_ID, null);
+		layout2.addChild(logCheck);
 		plank3Check	= new GuiCheckBox(Msgs.msg[Msgs.gui_typePlank3], GuiCheckBox.UNCHECKED, true, PLANK3BUTT_ID, null);
 		layout2.addChild(plank3Check);
+		layout.addChild(null);			// add an empty cell in first cell of next row
+		layout2	= layout.addNewLayoutChild(RWGui.LAYOUT_HORIZ, RWGui.LAYOUT_H_LEFT | RWGui.LAYOUT_V_TOP);
+		layout2.setPadding(INTERTYPE_PADDING);
+		window1Check= new GuiCheckBox(Msgs.msg[Msgs.gui_typeWindow1], GuiCheckBox.UNCHECKED, true, WINDOW1BUTT_ID, null);
+		layout2.addChild(window1Check);
+		window2Check= new GuiCheckBox(Msgs.msg[Msgs.gui_typeWindow2], GuiCheckBox.UNCHECKED, true, WINDOW2BUTT_ID, null);
+		layout2.addChild(window2Check);
+		window3Check= new GuiCheckBox(Msgs.msg[Msgs.gui_typeWindow3], GuiCheckBox.UNCHECKED, true, WINDOW3BUTT_ID, null);
+		layout2.addChild(window3Check);
+		window4Check= new GuiCheckBox(Msgs.msg[Msgs.gui_typeWindow4], GuiCheckBox.UNCHECKED, true, WINDOW4BUTT_ID, null);
+		layout2.addChild(window4Check);
 
 		// The QUANTITY
 		quant	= 1;
@@ -245,8 +267,23 @@ public class Gui extends GuiDialogueBox
 			case BEAMBUTT_ID:
 				type	= PlanksAndBeams.BEAM_ID;
 				break;
+			case LOGBUTT_ID:
+				type	= PlanksAndBeams.LOG_ID;
+				break;
 			case PLANK3BUTT_ID:
 				type	= PlanksAndBeams.PLANKTRI_ID;
+				break;
+			case WINDOW1BUTT_ID:
+				type	= PlanksAndBeams.WINDOW1_ID;
+				break;
+			case WINDOW2BUTT_ID:
+				type	= PlanksAndBeams.WINDOW2_ID;
+				break;
+			case WINDOW3BUTT_ID:
+				type	= PlanksAndBeams.WINDOW3_ID;
+				break;
+			case WINDOW4BUTT_ID:
+				type	= PlanksAndBeams.WINDOW4_ID;
 				break;
 			case MINBUTT_ID:
 				quant = 1;
@@ -276,12 +313,18 @@ public class Gui extends GuiDialogueBox
 //					player.sendTextMessage(Msgs.msg[Msgs.txt_newitem_failed]);
 //					break;
 				case PlanksAndBeams.ERR_SUCCESS:
-					String[]	texts	= new String[1];
-					texts[0]	= String.format(Msgs.msg[Msgs.txt_items_added], quant,
-							type == PlanksAndBeams.PLANK_ID ? Msgs.msg[Msgs.gui_typePlank] :
-							(type == PlanksAndBeams.BEAM_ID ? Msgs.msg[Msgs.gui_typeBeam] :
-								Msgs.msg[Msgs.gui_typePlank3]),
-							variation);
+					String[]	texts		= new String[1];
+					int			typeMsgId	=
+							type == PlanksAndBeams.WINDOW4_ID ? Msgs.gui_typeWindow4 :
+								(type == PlanksAndBeams.WINDOW3_ID ? Msgs.gui_typeWindow3 :
+									(type == PlanksAndBeams.WINDOW2_ID ? Msgs.gui_typeWindow2 :
+										(type == PlanksAndBeams.WINDOW1_ID ? Msgs.gui_typeWindow1 :
+											(type == PlanksAndBeams.PLANKTRI_ID ? Msgs.gui_typePlank3 :
+												(type == PlanksAndBeams.LOG_ID ? Msgs.gui_typeLog :
+													(type == PlanksAndBeams.BEAM_ID ? Msgs.gui_typeBeam :
+														Msgs.gui_typePlank
+								))))));
+					texts[0]	= String.format(Msgs.msg[Msgs.txt_items_added], quant, Msgs.msg[typeMsgId], variation);
 					push(player, new GuiMessageBox(PlanksAndBeams.plugin, player, Msgs.msg[Msgs.gui_title],
 							texts, 0));
 					break;
@@ -315,19 +358,13 @@ public class Gui extends GuiDialogueBox
 					break;
 				}
 				ImageInformation ii;
-				try
-				{
-					ii = new ImageInformation(PlanksAndBeams.pluginPath + "/assets/"+image2texture[textureFirst+i]+".png");
-//					URL url = PlanksAndBeams.plugin.getClass().getResource("/assets/"+image2texture[textureFirst+i]+".png");
-//					URI	uri	= url.toURI();
-//					File file	= new File(uri);
-//					ii = new ImageInformation(file);
-					images[i].setImage(ii);
-					images[i].setVisible(true);
-				} catch (IOException /*| URISyntaxException*/ e)
-				{
-					e.printStackTrace();
-				}
+				ii = new ImageInformation(PlanksAndBeams.pluginPath + "/assets/"+image2texture[textureFirst+i]+".png");
+//				URL url = PlanksAndBeams.plugin.getClass().getResource("/assets/"+image2texture[textureFirst+i]+".png");
+//				URI	uri	= url.toURI();
+//				File file	= new File(uri);
+//				ii = new ImageInformation(file);
+				images[i].setImage(ii);
+				images[i].setVisible(true);
 			}
 			textureFirstOld	= textureFirst;
 			updateSelected();
