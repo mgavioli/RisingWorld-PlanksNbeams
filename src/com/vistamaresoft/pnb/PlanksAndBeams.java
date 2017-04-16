@@ -38,7 +38,7 @@ public class PlanksAndBeams extends Plugin implements Listener
 	public static		Locale	locale;
 
 	// CONSTANTS
-	public static final String	VERSION				= "0.4.0";
+	public static final String	VERSION				= "0.4.1";
 	public static final	String	publicName			= "Planks 'n Beams";
 	public static final int		NUM_OF_QUICKSLOTS	= 5;
 	public static final int		NUM_OF_INVSLOTS		= 32;
@@ -195,9 +195,10 @@ public class PlanksAndBeams extends Plugin implements Listener
 		// retrieve the needed resource
 		int		itemId		= resourceId[resourcePerVariation[variation-firstVariation]];
 		int		itemVar		= resourceVar[resourcePerVariation[variation-firstVariation]];
+		Boolean	freeCreative= (Boolean)player.getPermissionValue("creative_freecrafting");
 		int		cost		= player.isAdmin() && PlanksAndBeams.freeForAdmin ||
-								player.isCreativeModeEnabled() && PlanksAndBeams.freeForCreative ? 0
-								: quantity * costPerItem;
+					player.isCreativeModeEnabled() && freeCreative && PlanksAndBeams.freeForCreative ? 0
+					: quantity * costPerItem;
 		// scan the inventory to collect the total number of resources and the slots where they are
 		Item	item;
 		Inventory	inv	= player.getInventory();

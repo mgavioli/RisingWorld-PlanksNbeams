@@ -1,6 +1,6 @@
 name: com.vms.PlanksAndBeams
 main: com.vistamaresoft.pnb.PlanksAndBeams
-version: 0.4.0
+version: 0.4.1
 author: Maurizio M. Gavioli aka Miwarre
 team: VistaMare Software
 description: "To provide players with non-standard planks and beams."

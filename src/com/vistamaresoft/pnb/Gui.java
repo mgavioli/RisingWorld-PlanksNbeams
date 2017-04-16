@@ -36,8 +36,6 @@ public class Gui extends GuiDialogueBox
 	// Constants
 	private static final	int		NUM_OF_IMAGES	= NUM_OF_IMG_ROWS * NUM_OF_IMG_COLS;
 	private static final	int		NUM_OF_TEXTURES	= 198;
-	private static final	int		INTERTYPE_PADDING	= RWGui.DEFAULT_PADDING * 3;
-	private static final	int		INTERQTY_PADDING= RWGui.DEFAULT_PADDING * 3;
 
 	private static final	int		PGUPBUTT_ID		= (NUM_OF_IMG_COLS * NUM_OF_IMG_ROWS) + 1;
 	private static final	int		PGDNBUTT_ID		= PGUPBUTT_ID + 1;
@@ -134,8 +132,9 @@ public class Gui extends GuiDialogueBox
 	{
 		super(PlanksAndBeams.plugin, Msgs.msg[Msgs.gui_title], RWGui.LAYOUT_VERT, null);
 		setCallback(new DlgHandler());
+		Boolean	freeCreative	= (Boolean)player.getPermissionValue("creative_freecrafting");
 		free = player.isAdmin() && PlanksAndBeams.freeForAdmin ||
-				player.isCreativeModeEnabled() && PlanksAndBeams.freeForCreative;
+				player.isCreativeModeEnabled() && freeCreative && PlanksAndBeams.freeForCreative;
 		// The TEXTURES
 		addChild(new GuiLabel(Msgs.msg[Msgs.gui_texture], 0, 0, false));
 		textureFirst		= 0;
@@ -160,14 +159,13 @@ public class Gui extends GuiDialogueBox
 		layout2.addChild(pgDnButt, PGDNBUTT_ID);
 
 		// The TABLE of settings
-		layout	= addNewTableLayoutChild(2, 4, 0);
+		layout	= addNewTableLayoutChild(2, 3, 0);
 
 		// The TYPE
 		type		= PlanksAndBeams.PLANK_ID;
 		layout.addChild(new GuiLabel(Msgs.msg[Msgs.gui_type], 0, 0, false));
-
-		layout2	= layout.addNewLayoutChild(RWGui.LAYOUT_HORIZ, RWGui.LAYOUT_H_LEFT | RWGui.LAYOUT_V_TOP);
-		layout2.setPadding(INTERTYPE_PADDING);
+		// the sub-table of types
+		layout2	= layout.addNewTableLayoutChild(4, 2, 0);
 		plankCheck	= new GuiCheckBox(Msgs.msg[Msgs.gui_typePlank], GuiCheckBox.CHECKED, true, PLANKBUTT_ID, null);
 		layout2.addChild(plankCheck);
 		beamCheck	= new GuiCheckBox(Msgs.msg[Msgs.gui_typeBeam], GuiCheckBox.UNCHECKED, true, BEAMBUTT_ID, null);
@@ -176,9 +174,6 @@ public class Gui extends GuiDialogueBox
 		layout2.addChild(logCheck);
 		plank3Check	= new GuiCheckBox(Msgs.msg[Msgs.gui_typePlank3], GuiCheckBox.UNCHECKED, true, PLANK3BUTT_ID, null);
 		layout2.addChild(plank3Check);
-		layout.addChild(null);			// add an empty cell in first cell of next row
-		layout2	= layout.addNewLayoutChild(RWGui.LAYOUT_HORIZ, RWGui.LAYOUT_H_LEFT | RWGui.LAYOUT_V_TOP);
-		layout2.setPadding(INTERTYPE_PADDING);
 		window1Check= new GuiCheckBox(Msgs.msg[Msgs.gui_typeWindow1], GuiCheckBox.UNCHECKED, true, WINDOW1BUTT_ID, null);
 		layout2.addChild(window1Check);
 		window2Check= new GuiCheckBox(Msgs.msg[Msgs.gui_typeWindow2], GuiCheckBox.UNCHECKED, true, WINDOW2BUTT_ID, null);
@@ -192,7 +187,6 @@ public class Gui extends GuiDialogueBox
 		quant	= 1;
 		layout.addChild(new GuiLabel(Msgs.msg[Msgs.gui_quantity], 0, 0, false));
 		layout2	= layout.addNewLayoutChild(RWGui.LAYOUT_HORIZ, RWGui.LAYOUT_H_LEFT | RWGui.LAYOUT_V_MIDDLE);
-		layout2.setPadding(INTERQTY_PADDING);
 		minButt		= new GuiLabel(Msgs.msg[Msgs.gui_minButt], 0, 0, false);
 		minButt.setColor(RWGui.ACTIVE_COLOUR);
 		layout2.addChild(minButt, MINBUTT_ID);
@@ -352,17 +346,11 @@ public class Gui extends GuiDialogueBox
 					for (int j = i; j < NUM_OF_IMAGES; j++)
 					{
 						images[j].setVisible(false);
-//						images[j].setImage(null);
-//						images[j].setColor(RWGui.PANEL_COLOUR);
 					}
 					break;
 				}
 				ImageInformation ii;
 				ii = new ImageInformation(PlanksAndBeams.pluginPath + "/assets/"+image2texture[textureFirst+i]+".png");
-//				URL url = PlanksAndBeams.plugin.getClass().getResource("/assets/"+image2texture[textureFirst+i]+".png");
-//				URI	uri	= url.toURI();
-//				File file	= new File(uri);
-//				ii = new ImageInformation(file);
 				images[i].setImage(ii);
 				images[i].setVisible(true);
 			}
