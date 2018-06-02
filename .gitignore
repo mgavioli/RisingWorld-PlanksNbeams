@@ -49,6 +49,12 @@ local.properties
 .texlipse
 
 ######################
+# NetBeans
+######################
+/nbproject/
+build.xml
+
+######################
 # Java
 ######################
 *.class
