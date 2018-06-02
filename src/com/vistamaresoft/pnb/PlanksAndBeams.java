@@ -1,12 +1,12 @@
 /****************************
-	P l a n k s A n d B e a m  s  -  A Rising World Java plug-in distributing non-standard planks and beams.
+	P l a n k s A n d B e a m  s  -  A Rising World Java plug-in generating non-standard planks and beams.
 
 	PlanksAndBeams.java - The main plug-in class
 
 	Created by : Maurizio M. Gavioli 2016-10-22
 
-	(C) Maurizio M. Gavioli (a.k.a. Miwarre), 2016
-	Licensed under the Creative Commons by-sa 3.0 license (see http://creativecommons.org/licenses/by-sa/3.0/ for details)
+	(C) Maurizio M. Gavioli (a.k.a. Miwarre), 2016-18
+	Licensed under the GNU General Public License v3.0
 
 *****************************/
 
@@ -28,7 +28,11 @@ import net.risingworld.api.objects.Player;
 public class PlanksAndBeams extends Plugin implements Listener
 {
 	// SETTINGS with their default values
-	public static final String	localeLanguageDef	= "en";
+
+	/**
+	 *
+	 */
+	public static final String	LocaleLanguageDef	= "en";
 
 	public static		String	commandPrefix		= "/pnb";
 	public static		int		costPerItem			= 1;
@@ -38,22 +42,22 @@ public class PlanksAndBeams extends Plugin implements Listener
 	public static		Locale	locale;
 
 	// CONSTANTS
-	public static final String	VERSION				= "0.4.1";
+	public static final String	VERSION				= "0.5.0";
 	public static final	String	publicName			= "Planks 'n Beams";
 	public static final int		NUM_OF_QUICKSLOTS	= 5;
 	public static final int		NUM_OF_INVSLOTS		= 32;
-	public static final short	ORE_ID				= 100;
-	public static final short	LUMBER_ID			= 102;
-	public static final short	PLANK_ID			= 113;
-	public static final short	BEAM_ID				= 114;
-	public static final short	WINDOW1_ID			= 117;	// frame
-	public static final short	WINDOW2_ID			= 118;	// frame + vert.
-	public static final short	WINDOW3_ID			= 119;	// frame + vert. + high bar
-	public static final short	WINDOW4_ID			= 120;	// frame + vert. + middle bar
-	public static final short	PLANKTRI_ID			= 124;
-	public static final short	LOG_ID				= 125;
-	public static final short	IRONINGOT_ID		= 171;
-	public static final short	COPPERINGOT_ID		= 172;
+	public static final short	ORE_ID				= 309;
+	public static final short	LUMBER_ID			= 265;
+	public static final short	PLANK_ID			= 760;
+	public static final short	BEAM_ID				= 761;
+	public static final short	WINDOW1_ID			= 771;	// frame
+	public static final short	WINDOW2_ID			= 772;	// frame + vert.
+	public static final short	WINDOW3_ID			= 773;	// frame + vert. + high bar
+	public static final short	WINDOW4_ID			= 773;	// frame + vert. + middle bar
+	public static final short	PLANKTRI_ID			= 763;
+	public static final short	LOG_ID				= 762;
+	public static final short	IRONINGOT_ID		= 311;
+	public static final short	COPPERINGOT_ID		= 310;
 	public static final short	DIRT_VAR			= 1;
 	public static final short	STONE_VAR			= 3;
 	public static final short	GRAVEL_VAR			= 4;
@@ -169,8 +173,7 @@ public class PlanksAndBeams extends Plugin implements Listener
 	public void mainGui(Player player)
 	{
 		Gui	gui		= new Gui(player);
-		if (gui != null)
-			gui.show(player);
+		gui.show(player);
 	}
 
 	//****************************
@@ -203,7 +206,7 @@ public class PlanksAndBeams extends Plugin implements Listener
 		Item	item;
 		Inventory	inv	= player.getInventory();
 		int		resources	= 0;					// the number of resources available in the player inventory
-		ArrayList<Integer>	sourceSlots	= new ArrayList<Integer>();
+		ArrayList<Integer>	sourceSlots	= new ArrayList<>();
 		if (cost > 0)
 			for (int invType = 0; invType < slotTypeValues.length; invType++)
 			{
@@ -271,7 +274,7 @@ public class PlanksAndBeams extends Plugin implements Listener
 			freeForAdmin	= (toInteger(settings.getProperty("freeForAdmin"), 0) != 0);
 			freeForCreative	= (toInteger(settings.getProperty("freeForCreative"), 0) != 0);
 			// locale is a bit more complex
-			String		strLocale		= settings.getProperty("locale", localeLanguageDef);
+			String		strLocale		= settings.getProperty("locale", LocaleLanguageDef);
 			String[]	localeParams	= strLocale.split("-");
 			if (localeParams.length > 0)
 			{
@@ -286,10 +289,10 @@ public class PlanksAndBeams extends Plugin implements Listener
 					locale	= new Locale(localeParams[0]);
 			}
 			else
-				locale	= new Locale(localeLanguageDef);
+				locale	= new Locale(LocaleLanguageDef);
 		} catch (IOException e) {
-			locale	= new Locale(localeLanguageDef);
-			return;					// settings are init'ed anyway: on exception, do nothing
+			locale	= new Locale(LocaleLanguageDef);
+//			return;					// settings are init'ed anyway: on exception, do nothing
 		}
 	}
 
