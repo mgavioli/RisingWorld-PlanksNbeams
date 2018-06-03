@@ -253,6 +253,8 @@ public class Gui extends GuiDialogueBox
 				if (textureFirst+NUM_OF_IMAGES >= NUM_OF_TEXTURES)
 					pgDnButt.setVisible(false);
 				pgUpButt.setVisible(true);
+				if (textureFirst + imageSel >= NUM_OF_TEXTURES)
+					imageSel	= NUM_OF_TEXTURES - textureFirst - 1;
 				updateImages();
 				break;
 			case PLANKBUTT_ID:
