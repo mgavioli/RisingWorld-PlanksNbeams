@@ -42,7 +42,7 @@ public class PlanksAndBeams extends Plugin implements Listener
 	public static		Locale	locale;
 
 	// CONSTANTS
-	public static final String	VERSION				= "0.5.2";
+	public static final String	VERSION				= "0.5.3";
 	public static final	String	publicName			= "Planks 'n Beams";
 	public static final int		NUM_OF_QUICKSLOTS	= 5;
 	public static final int		NUM_OF_INVSLOTS		= 32;
@@ -56,8 +56,8 @@ public class PlanksAndBeams extends Plugin implements Listener
 	public static final short	WINDOW4_ID			= 774;	// frame + vert. + middle bar
 	public static final short	PLANKTRI_ID			= 763;
 	public static final short	LOG_ID				= 762;
-	public static final short	IRONINGOT_ID			= 311;
-	public static final short	COPPERINGOT_ID		= 310;
+	public static final short	IRONINGOT_ID			= 310;
+	public static final short	COPPERINGOT_ID		= 311;
 	public static final short	DIRT_VAR				= 1;
 	public static final short	STONE_VAR			= 3;
 	public static final short	GRAVEL_VAR			= 4;
