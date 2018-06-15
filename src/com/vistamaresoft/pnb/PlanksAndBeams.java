@@ -37,18 +37,18 @@ public class PlanksAndBeams extends Plugin implements Listener
 	public static		String	commandPrefix		= "/pnb";
 	public static		int		costPerItem			= 1;
 	public static		int		windowResMult		= 5;
-	public static		boolean	freeForAdmin			= false;
+	public static		boolean	freeForAdmin		= false;
 	public static		boolean	freeForCreative		= false;
 	public static		Locale	locale;
 
 	// CONSTANTS
-	public static final String	VERSION				= "0.5.3";
+	public static final String	VERSION				= "0.5.4";
 	public static final	String	publicName			= "Planks 'n Beams";
 	public static final int		NUM_OF_QUICKSLOTS	= 5;
 	public static final int		NUM_OF_INVSLOTS		= 32;
 	public static final short	ORE_ID				= 309;
 	public static final short	LUMBER_ID			= 265;
-	public static final short	PLANK_ID				= 760;
+	public static final short	PLANK_ID			= 760;
 	public static final short	BEAM_ID				= 761;
 	public static final short	WINDOW1_ID			= 771;	// frame
 	public static final short	WINDOW2_ID			= 772;	// frame + vert.
@@ -56,12 +56,12 @@ public class PlanksAndBeams extends Plugin implements Listener
 	public static final short	WINDOW4_ID			= 774;	// frame + vert. + middle bar
 	public static final short	PLANKTRI_ID			= 763;
 	public static final short	LOG_ID				= 762;
-	public static final short	IRONINGOT_ID			= 310;
+	public static final short	IRONINGOT_ID		= 310;
 	public static final short	COPPERINGOT_ID		= 311;
-	public static final short	DIRT_VAR				= 1;
+	public static final short	DIRT_VAR			= 1;
 	public static final short	STONE_VAR			= 3;
 	public static final short	GRAVEL_VAR			= 4;
-	public static final short	SAND_VAR				= 9;
+	public static final short	SAND_VAR			= 9;
 	public static final short	SANDSTONE_VAR		= 11;
 
 	// not a real constant, cached for performance, as it is going to be used a lot!
@@ -113,7 +113,7 @@ public class PlanksAndBeams extends Plugin implements Listener
 	// RETURN CODES
 	public static final int		ERR_SUCCESS			= 0;
 	public static final int		ERR_INVALID_PARAM	= -1;
-	public static final int		ERR_NO_RESOURCES		= -2;
+	public static final int		ERR_NO_RESOURCES	= -2;
 	public static final int		ERR_GENERIC			= -3;
 
 	// FIELDS
